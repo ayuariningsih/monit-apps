@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
+// const withMT = require("@material-tailwind/react/utils/withMT")
+
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   mode: "jit",
   theme: {
@@ -11,8 +13,11 @@ module.exports = {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
       },
-      colors: {},
+      colors: {
+        primary: "#0e6eff",
+        "blue-100": "#0051cc",
+      },
     },
   },
   plugins: [],
-};
+}

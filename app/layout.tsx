@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Monit Apps - Financial platform for fast-growing businesses',
-  description: 'Financial platform for fast-growing businesses',
+  title: 'TransferNow - Financial platform for millenial businesses',
+  description: 'Financial platform for millenial businesses',
 }
 
 export default function RootLayout({
@@ -13,6 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <meta name="viewport" content="initial-scale=1, width=device-width" />
       <body className="relative">
         {children}
       </body>
