@@ -3,47 +3,47 @@
 import { SearchBar, CustomButton } from "@/components";
 import { TrashIcon } from '@heroicons/react/20/solid'
 import { ChangeEvent, useState } from "react";
-import { selectedRecipient } from "@/types";
+import { RecipientListProps, SelectedRecipient } from "@/types";
 
 const TABLE_HEAD = ["", "Recipient", "Description", "Discount", "Amount", "Total"];
 
-const TABLE_ROWS = [
-  {
-    id: 1,
-    recipient_name: "Ayu",
-    description: "Salary Juni",
-    discount: "10%",
-    amount: "Rp 10.000.000",
-    total: "Rp 9.900.000"
-  },
-  {
-    id: 2,
-    recipient_name: "Nicholas Saputra",
-    description: "Salary Juni",
-    discount: "10%",
-    amount: "Rp 10.000.000",
-    total: "Rp 9.900.000"
-  },
-  {
-    id: 3,
-    recipient_name: "Kiki Saputri",
-    description: "Salary Juni",
-    discount: "10%",
-    amount: "Rp 10.000.000",
-    total: "Rp 9.900.000"
-  },
-  {
-    id: 4,
-    recipient_name: "Uzumaki Naruto",
-    description: "Salary Juni",
-    discount: "10%",
-    amount: "Rp 10.000.000",
-    total: "Rp 9.900.000"
-  }
-]
+// const TABLE_ROWS = [
+//   {
+//     id: 1,
+//     recipient_name: "Ayu",
+//     description: "Salary Juni",
+//     discount: "10%",
+//     amount: "Rp 10.000.000",
+//     total: "Rp 9.900.000"
+//   },
+//   {
+//     id: 2,
+//     recipient_name: "Nicholas Saputra",
+//     description: "Salary Juni",
+//     discount: "10%",
+//     amount: "Rp 10.000.000",
+//     total: "Rp 9.900.000"
+//   },
+//   {
+//     id: 3,
+//     recipient_name: "Kiki Saputri",
+//     description: "Salary Juni",
+//     discount: "10%",
+//     amount: "Rp 10.000.000",
+//     total: "Rp 9.900.000"
+//   },
+//   {
+//     id: 4,
+//     recipient_name: "Uzumaki Naruto",
+//     description: "Salary Juni",
+//     discount: "10%",
+//     amount: "Rp 10.000.000",
+//     total: "Rp 9.900.000"
+//   }
+// ]
 
-const ListRecipients = () => {
-  const [selectedRecipient, setSelectedRecipient] = useState<selectedRecipient>({
+const ListRecipients = ({ recipients }: RecipientListProps) => {
+  const [selectedRecipient, setSelectedRecipient] = useState<SelectedRecipient>({
     recipients: [],
   })
 
@@ -61,8 +61,6 @@ const ListRecipients = () => {
       })
     }
   }
-
-  console.log(selectedRecipient)
 
   return (
     <div className="h-full w-full">
@@ -115,11 +113,10 @@ const ListRecipients = () => {
               </tr>
             </thead>
             <tbody>
-              {TABLE_ROWS.map(
+              {recipients.map(
                 (
                   {
-                    id,
-                    recipient_name,
+                    recipient,
                     description,
                     discount,
                     amount,
@@ -127,17 +124,17 @@ const ListRecipients = () => {
                   },
                   index,
                 ) => {
-                  const isLast = index === TABLE_ROWS.length - 1;
+                  const isLast = index === recipients.length - 1;
                   const classes = isLast
                     ? "p-4"
                     : "p-4 border-b border-blue-gray-50";
   
                   return (
-                    <tr key={recipient_name}>
+                    <tr key={recipient.id}>
                       <td className={classes}>
                         <input 
-                          id={`checkbox-${id}`}
-                          value={id}
+                          id={`checkbox-${recipient.id}`}
+                          value={recipient.name}
                           onChange={(e) => onChangeCheckBox(e)}
                           type="checkbox"
                           className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
@@ -149,7 +146,7 @@ const ListRecipients = () => {
                             color="blue-gray"
                             className="font-normal text-sm"
                           >
-                            {recipient_name}
+                            {recipient.name}
                           </p>
                         </div>
                       </td>

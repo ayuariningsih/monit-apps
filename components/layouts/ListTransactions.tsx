@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CustomButton, SearchBar } from "@/components";
+import { TransactionListProps } from "@/types";
  
 const TABLE_HEAD = ["Transfer Name", "Total Recipient", "Total Amount", ""];
  
@@ -29,8 +30,9 @@ const TABLE_ROWS = [
     total_recipient: 13,
   },
 ];
+
  
-const ListTransactions = () => {
+const ListTransactions = ({ transactions }: TransactionListProps) => {
   return (
     <div className="h-full w-full">
       <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
@@ -66,13 +68,14 @@ const ListTransactions = () => {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(
+            {transactions.map(
               (
                 {
                   id,
                   name,
-                  total_recipient,
-                  total_amount
+                  total,
+                  recipients
+
                 },
                 index,
               ) => {
@@ -102,7 +105,7 @@ const ListTransactions = () => {
                         color="blue-gray"
                         className="font-normal text-sm"
                       >
-                        {total_recipient} Recipient
+                        {recipients.length} Recipient(s)
                       </p>
                     </td>
                     <td className={classes}>
@@ -110,7 +113,7 @@ const ListTransactions = () => {
                         color="blue-gray"
                         className="font-normal text-sm"
                       >
-                        {total_amount}
+                        {total}
                       </p>
                     </td>
                     <td className={classes}>

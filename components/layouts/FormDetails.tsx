@@ -1,12 +1,36 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CustomButton, ListRecipients, ModalRecipient } from "@/components"
 import { PlusCircleIcon } from '@heroicons/react/20/solid'
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
+import { getTransactionById } from "@/utils"
+import { TransactionProps } from "@/types"
 
 const FormDetails = () => {
   const router = useRouter()
+  const params = useParams()
+
+  const initialTransaction = {
+    id: '',
+    name: '',
+    total: '',
+    recipients: []
+  }
+
+  const [detailTransaction, setDetailTransaction] = useState<TransactionProps>(initialTransaction)
+
+  async function fetchTransaction() {
+    try {
+      const { transaction } = await getTransactionById(params.id.toString())
+      console.log(transaction)
+
+      setDetailTransaction(transaction)
+    } catch (error) {
+      
+    }
+  }
+  
   const [isShowModal, setIsShowModal] = useState(false)
 
   function openRecipientModal () {
@@ -16,12 +40,16 @@ const FormDetails = () => {
   function handleCloseModal () {
     setIsShowModal(false)
   }
+
+  useEffect(() => {
+    fetchTransaction() 
+  }, [detailTransaction.name, detailTransaction.total])
   
   return (
     <>
       <div className="p-6 bg-white border border-gray-200 rounded-lg shadow">
         <form>
-          <div className="mb-4 w-1/3">
+          <div className="mb-4 xl:w-1/3 w-full">
             <label
               htmlFor="transfer-name"
               className="block mb-2 font-semibold text-gray-900"
@@ -30,7 +58,9 @@ const FormDetails = () => {
             </label>
             <input
               type="text"
-              id="transfer-name" 
+              id="transfer-name"
+              value={detailTransaction.name}
+              onChange={() => handleCloseModal}
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 w-full block p-2.5"
               placeholder="Input transfer name"
             />
@@ -46,7 +76,7 @@ const FormDetails = () => {
             />
           </div>
 
-          <ListRecipients />
+          <ListRecipients recipients={detailTransaction.recipients} />
 
           <ModalRecipient
             isOpen={isShowModal}
