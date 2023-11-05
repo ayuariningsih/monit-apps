@@ -6,13 +6,14 @@ export interface CustomButtonProps {
   handleClick?: MouseEventHandler<HTMLButtonElement>
   btnType?: 'button' | 'submit'
   textStyles?: string
-  rightIcon?: string
+  leftIcon?: any
   isDisabled?: boolean
 }
 
 export interface ModalProps {
   isOpen: boolean
   handleCloseModal: () => void
+  handleAddRecipient: (data: RecipientProps) => void
   title: string
 }
 
@@ -21,27 +22,35 @@ export interface SelectedRecipient {
 }
 
 export interface TransactionListProps {
-  transactions: TransactionProps[]
+  transactions: TransactionProps<RecipientProps[]>[]
 }
-export interface TransactionProps {
+export interface TransactionProps<T> {
   id: string
   name: string
   total: string
-  recipients: RecipientProps[]
+  recipients: T
 }
 
 export interface RecipientListProps {
-  recipients: RecipientProps[]
+  recipients: RecipientProps[],
+  isEditing: boolean,
+  handleDeletedRecipient: (data: any) => void
 }
 
 export interface RecipientProps {
   description: string
   discount: string
   amount: string
-  recipient: PersonProps
+  recipient_id: string
+  recipient_name: string
   total: string
 }
 
+export interface SelectProps {
+  options: PersonProps[]
+  containerClass?: string
+  handleOnSelect: (data: string) => void
+}
 export interface PersonProps {
   id: string
   name: string

@@ -1,3 +1,5 @@
+import { RecipientProps, TransactionProps } from "@/types"
+
 const graphqlUrl = 'http://localhost:3000/api/graphql/'
 const headers    = {
   "Content-Type": "application/json"
@@ -28,6 +30,27 @@ export async function getAllTransactions() {
   return data
 }
 
+export async function getAllOptions() {
+  const response = await fetch(`http://localhost:3000/api/graphql/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: /* GraphQL */ `query MyQuery {
+        person {
+          id,
+          name
+        }
+      }`
+    })
+  })
+
+  const { data }  = await response.json()
+
+  return data
+}
+
 export async function getTransactionById(id: string) {
   const response = await fetch(graphqlUrl, {
     method: "POST",
@@ -39,10 +62,8 @@ export async function getTransactionById(id: string) {
           name,
           total,
           recipients {
-            recipient {
-              id,
-              name
-            },
+            recipient_id,
+            recipient_name
             description,
             amount,
             discount,
@@ -51,6 +72,64 @@ export async function getTransactionById(id: string) {
         }
       }`,
       variables: { id }
+    })
+  })
+
+  const { data }  = await response.json()
+
+  return data
+}
+
+export async function createNewTransaction(transaction:TransactionProps<RecipientProps[]>) {
+  const response = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
+      query: /* GraphQL */ `mutation CreateTransaction($transaction:AddTransactionInput!) {
+        createTransaction(transaction: $transaction) {
+          id,
+          name,
+          total,
+          recipients {
+            recipient_id,
+            recipient_name
+            description,
+            amount,
+            discount,
+            total
+          }
+        }
+      }`,
+      variables: { transaction }
+    })
+  })
+
+  const { data }  = await response.json()
+
+  return data
+}
+
+export async function updateCurrentTransaction(id: string, edits:TransactionProps<RecipientProps[]>) {
+  const response = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
+      query: /* GraphQL */ `mutation UpdateTransaction($id: ID!, $edits:EditTransactionInput!) {
+        updateTransaction(id: $id, edits: $edits) {
+          id,
+          name,
+          total,
+          recipients {
+            recipient_id,
+            recipient_name
+            description,
+            amount,
+            discount,
+            total
+          }
+        }
+      }`,
+      variables: { id, edits }
     })
   })
 

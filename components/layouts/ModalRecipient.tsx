@@ -1,11 +1,73 @@
 "use client"
 
-import { ModalProps } from '@/types'
+import { ModalProps, PersonProps, RecipientProps } from '@/types'
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment } from 'react'
-import { CustomButton } from '..'
+import { Fragment, useEffect, useState } from 'react'
+import { CustomButton, SelectCustom } from '..'
+import { getAllOptions } from '@/utils'
 
-export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
+export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, title }: ModalProps) {
+  const randomId = Math.floor(Math.random() * 10000).toString()
+  const initialRecipient = {
+    recipient_id: randomId,
+    recipient_name: '',
+    description: '',
+    discount: '0',
+    amount: '0',
+    total: '0'
+  }
+
+  const [recipient, setRecipient] = useState<RecipientProps>(initialRecipient)
+
+  const getTotalAmount = (amount: string = '0', discount: string = '0'): string => {
+    const result = Number(amount) - (Number(amount) * Number(discount) / 100)
+    
+    return result.toString()
+  }
+
+  const [options, setOptions] = useState<PersonProps[]>([])
+
+  async function fetchOptions() {
+    const { person } = await getAllOptions()
+
+    setOptions(person)
+  }
+
+  useEffect(() => {
+    fetchOptions()
+
+  }, [])
+
+  function onSelectOptions (value: string) {
+    setRecipient({...recipient, recipient_name: value})
+  }  
+
+  async function handleSubmit () {
+    await handleAddRecipient(recipient)
+    await handleCloseModal()
+
+    //reset modal
+    setRecipient(initialRecipient)
+  }
+
+  function handleCancel () {
+    handleCloseModal()
+
+    //reset modal
+    setRecipient(initialRecipient)
+  }
+
+  useEffect(() => {
+    if (Number(recipient.amount) > 0) {
+      const { amount, discount } = recipient
+      const totalAmount = getTotalAmount(amount, discount)
+  
+      setRecipient({...recipient, total:  totalAmount })
+    }
+
+  }, [recipient.amount, recipient.discount])
+  
+
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
@@ -44,17 +106,16 @@ export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
                     <form>
                       <div className="mb-6">
                         <label
-                          htmlFor="recipient"
+                          htmlFor="recipient" 
                           className="block mb-2 text-sm font-medium text-gray-900"
                         >
                           Nama Recipient
                         </label>
-                        <input
-                          type="text"
-                          id="recipient" 
-                          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
-                          placeholder="Search recipient"
-                        />
+
+                        <SelectCustom
+                          options={options}
+                          containerClass="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
+                          handleOnSelect={(value) => onSelectOptions(value)} />
                       </div>
 
                       <div className="mb-6">
@@ -65,6 +126,8 @@ export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
                           Description
                         </label>
                         <input
+                          onChange={(e) => setRecipient({...recipient, description: e.target.value })}
+                          value={recipient.description}
                           type="text"
                           id="description" 
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
@@ -80,8 +143,11 @@ export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
                           Discount
                         </label>
                         <input
-                          type="text"
+                          onChange={(e) => setRecipient({...recipient, discount: e.target.value })}
+                          value={recipient.discount}
+                          type="number"
                           id="discount" 
+                          min={0}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
                           placeholder="0%"
                         />
@@ -95,27 +161,25 @@ export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
                           Amount
                         </label>
                         <input
-                          type="text"
-                          id="amount" 
+                          onChange={(e) => setRecipient({...recipient, amount: e.target.value })}
+                          value={recipient.amount}
+                          type="number"
+                          id="amount"
+                          min={0}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
                           placeholder="Input amount"
                         />
                       </div>
-
-                      {/* <CustomButton
-                        btnType="submit"
-                        title="Edit"
-                        containerStyles="bg-primary text-white rounded-full px-12 w-max-1/3"
-                      /> */}
                     </form>
                   </div>
 
                   <div className="flex gap-3 mt-4">
                     <CustomButton
                       title="Save"
-                      btnType="submit"
+                      btnType="button"
                       containerStyles="bg-primary text-white rounded-lg py-3 px-6"
                       textStyles="text-sm"
+                      handleClick={handleSubmit}
                     />
 
                     <CustomButton
@@ -123,7 +187,7 @@ export default function Modal({ isOpen, handleCloseModal, title }: ModalProps) {
                       btnType="button"
                       containerStyles="outline outline-1 text-primary rounded-lg"
                       textStyles="text-primary text-sm"
-                      handleClick={handleCloseModal}
+                      handleClick={handleCancel}
                     />
                   </div>
                 </Dialog.Panel>

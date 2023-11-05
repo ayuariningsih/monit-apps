@@ -2,10 +2,11 @@
 
 import { SearchBar, CustomButton } from "@/components";
 import { TrashIcon } from '@heroicons/react/20/solid'
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import { RecipientListProps, SelectedRecipient } from "@/types";
+import { usePathname } from "next/navigation";
 
-const TABLE_HEAD = ["", "Recipient", "Description", "Discount", "Amount", "Total"];
+const TABLE_HEAD = ["Recipient", "Description", "Discount", "Amount", "Total"];
 
 // const TABLE_ROWS = [
 //   {
@@ -42,10 +43,14 @@ const TABLE_HEAD = ["", "Recipient", "Description", "Discount", "Amount", "Total
 //   }
 // ]
 
-const ListRecipients = ({ recipients }: RecipientListProps) => {
-  const [selectedRecipient, setSelectedRecipient] = useState<SelectedRecipient>({
-    recipients: [],
-  })
+const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: RecipientListProps) => {
+  const pathName = usePathname()
+  const isCreatePage = pathName.includes('create')
+  
+  const initialValue = {
+    recipients: []
+  }
+  const [selectedRecipient, setSelectedRecipient] = useState<SelectedRecipient>(initialValue)
 
   const onChangeCheckBox = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target
@@ -62,20 +67,29 @@ const ListRecipients = ({ recipients }: RecipientListProps) => {
     }
   }
 
+  async function removeRecipients() {
+    await setSelectedRecipient(initialValue)
+    handleDeletedRecipient(selectedRecipient)
+  }
+
   return (
     <div className="h-full w-full">
-       <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
-          <SearchBar placeholder="Search recipient" />
+      <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
+        <SearchBar placeholder="Search recipient" />
 
+        { isEditing && (
           <div className="flex">
-            <div className="flex gap-1 items-center mr-4">
-              <TrashIcon
-                className="h-4 w-4 text-red-600 align-middle cursor-pointer"
+            <CustomButton
+              title={`Deleted ${selectedRecipient.recipients.length} selected`}
+              btnType="button"
+              containerStyles="outline-none text-red-600 rounded-md mx-2"
+              textStyles="font-semibold text-sm text-red-600"
+              leftIcon={<TrashIcon
+                className="h-4 w-4 text-red-600 align-middle cursor-pointer mr-2"
                 aria-hidden="true"
-              />
-
-              <label className="font-semibold text-sm text-red-600">Deleted {selectedRecipient.recipients.length} selected</label> 
-            </div>
+              />}
+              handleClick={() => removeRecipients()}
+            />
 
             <CustomButton
               title="Undo"
@@ -91,12 +105,20 @@ const ListRecipients = ({ recipients }: RecipientListProps) => {
               textStyles="text-primary text-sm font-medium"
             />
           </div>
+        )}
       </div>
 
       <div className="overflow-hidden px-0">
           <table className="w-full min-w-max table-auto text-left">
             <thead>
               <tr>
+                { (isEditing || isCreatePage) && (
+                  <th
+                  key='action'
+                  className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                >
+                </th>
+                )}
                 {TABLE_HEAD.map((head) => (
                   <th
                     key={head}
@@ -116,7 +138,8 @@ const ListRecipients = ({ recipients }: RecipientListProps) => {
               {recipients.map(
                 (
                   {
-                    recipient,
+                    recipient_id,
+                    recipient_name,
                     description,
                     discount,
                     amount,
@@ -130,23 +153,25 @@ const ListRecipients = ({ recipients }: RecipientListProps) => {
                     : "p-4 border-b border-blue-gray-50";
   
                   return (
-                    <tr key={recipient.id}>
-                      <td className={classes}>
-                        <input 
-                          id={`checkbox-${recipient.id}`}
-                          value={recipient.name}
-                          onChange={(e) => onChangeCheckBox(e)}
-                          type="checkbox"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                        />
-                      </td>
+                    <tr key={recipient_id}>
+                      { (isEditing || isCreatePage) && (
+                        <td className={classes}>
+                          <input 
+                            id={`checkbox-${recipient_id}`}
+                            value={recipient_name}
+                            onChange={(e) => onChangeCheckBox(e)}
+                            type="checkbox"
+                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                          />
+                        </td>
+                      )}
                       <td className={classes}>
                         <div className="flex items-center gap-3">
                           <p
                             color="blue-gray"
                             className="font-normal text-sm"
                           >
-                            {recipient.name}
+                            {recipient_name}
                           </p>
                         </div>
                       </td>
@@ -163,7 +188,7 @@ const ListRecipients = ({ recipients }: RecipientListProps) => {
                           color="blue-gray"
                           className="font-normal text-sm"
                         >
-                          {discount}
+                          {discount}%
                         </p>
                       </td>
                       <td className={classes}>

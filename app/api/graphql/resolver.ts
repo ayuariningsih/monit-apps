@@ -3,7 +3,7 @@ import db from '@/lib/_db'
 export const resolvers = {
   Query: {
     person() {
-      return db.person
+      return db.recipientOptions
     },
     transactions() {
       return db.transactions
@@ -13,10 +13,10 @@ export const resolvers = {
     },
   },
   Mutation: {
-    addTransaction(_: any, args: { transaction: any }) {
+    createTransaction(_: any, args: { transaction: any }) {
       let transaction = {
         ...args.transaction, 
-        id: Math.floor(Math.random() * 10000).toString()
+        id: Math.floor(Math.random() * 10000)
       }
       db.transactions.push(transaction)
 

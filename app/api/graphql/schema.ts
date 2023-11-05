@@ -1,11 +1,12 @@
 export const typeDefs = `#graphql
-  type Person {
+  type RecipientOptions {
     id: ID!
     name: String!
   }
 
   type Recipient {
-    recipient: Person
+    recipient_id: ID!
+    recipient_name: String
     description: String
     discount: String
     amount: String
@@ -20,18 +21,19 @@ export const typeDefs = `#graphql
   }
 
   type Query {
-    person: [Person]
+    person: [RecipientOptions]
     transactions: [Transaction!]
     transaction(id: ID!): Transaction
   }
 
-  input PersonInput {
-    id: String!
-    name: String!
-  }
+  # input PersonInput {
+  #   id: String!
+  #   name: String!
+  # }
 
   input RecipientInput {
-    recipient: PersonInput
+    recipient_id: ID!
+    recipient_name: String
     description: String!
     discount: String
     amount: String!
@@ -39,19 +41,21 @@ export const typeDefs = `#graphql
   }
 
   input AddTransactionInput {
+    id: ID!
     name: String,
     recipients: [RecipientInput!]!,
-    total: String!
+    total: String
   }
 
   input EditTransactionInput {
+    id: ID!
     name: String,
-    recipients: [RecipientInput],
+    recipients: [RecipientInput!]!,
     total: String
   }
 
   type Mutation {
-    addTransaction(transaction: AddTransactionInput!): Transaction
+    createTransaction(transaction: AddTransactionInput!): Transaction
     updateTransaction(id: ID!, edits: EditTransactionInput): Transaction
     deleteTransaction(id: ID!): [Transaction]
   }
