@@ -29,7 +29,9 @@ const FormTransaction = () => {
 
    // validation rules
    const validateForm = () => {
-    let errors = {}
+    let errors = {
+      name: ''
+    }
     const { name } = detailTransaction
 
     if (name === '') errors.name = 'Name is required'
@@ -140,7 +142,7 @@ const FormTransaction = () => {
 
   return (
     <>
-      <div className="p-6 bg-white border border-gray-200 rounded-lg shadow">
+      <div className="p-6 bg-white border border-gray-300 rounded-lg shadow">
         <form>
           <div className="mb-4 xl:w-1/3 md:w-1/2 w-full">
             <label

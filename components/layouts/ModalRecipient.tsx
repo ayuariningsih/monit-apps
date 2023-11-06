@@ -27,7 +27,9 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
     
     const {amount, recipient_name} = recipient
 
+    //@ts-ignore
     if (Number(amount) < 10000) errors.amount = 'Amount should more than 10000'
+    //@ts-ignore
     if (recipient_name === '') errors.recipient_name = 'Name is required'
 
     setErrors(errors)
@@ -144,8 +146,14 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
                           containerClass="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
                           handleOnSelect={(value) => onSelectOptions(value)} />
                         
-                        {errors.recipient_name && (
-                          <p className="text-red-500 text-xs">{ errors.recipient_name }</p>
+                        {//@ts-ignore
+                          errors.recipient_name && (
+                          <p className="text-red-500 text-xs">
+                            {
+                            //@ts-ignore
+                             errors.recipient_name 
+                            }
+                          </p>
                         )}
                       </div>
 
@@ -201,8 +209,14 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
                           placeholder="Input amount"
                         />
 
-                        {errors.amount && (
-                          <p className="text-red-500 text-xs">{errors.amount}</p>
+                        {//@ts-ignore
+                          errors.amount && (
+                          <p className="text-red-500 text-xs">
+                            {
+                              //@ts-ignore
+                              errors.amount
+                            }
+                          </p>
                         )}
                       </div>
                     </form>
