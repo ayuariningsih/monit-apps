@@ -184,7 +184,7 @@ const FormTransaction = () => {
             <ListRecipients
               recipients={detailTransaction.recipients}
               isEditing={isEditing}
-              handleDeletedRecipient={(e) => deleteRecipient(e)}
+              handleDeleteRecipient={(e) => deleteRecipient(e)}
              />
           )}
 

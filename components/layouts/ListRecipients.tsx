@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 
 const TABLE_HEAD = ["Recipient", "Description", "Discount", "Amount", "Total"]
 
-const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: RecipientListProps) => {
+const ListRecipients = ({ recipients, isEditing, handleDeleteRecipient }: RecipientListProps) => {
   const pathName = usePathname()
   const isCreatePage = pathName.includes('create')
   
@@ -49,8 +49,13 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
 
   async function removeRecipients() {
     await setSelectedRecipient(initialValue)
-    handleDeletedRecipient(selectedRecipient)
+    handleDeleteRecipient(selectedRecipient)
   }
+
+  useEffect(() => {
+    setAllRecipients(recipients)
+  }, [recipients.length])
+  
 
   return (
     <div className="h-full w-full">
@@ -60,7 +65,7 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
         { (isEditing || isCreatePage) && (
           <div className="flex md:flex-row flex-col gap-2">
             <CustomButton
-              title={`Deleted ${selectedRecipient.recipients.length} selected`}
+              title={`Delete ${selectedRecipient.recipients.length} selected`}
               btnType="button"
               containerStyles="outline-none text-red-600 rounded-md mx-2"
               textStyles="font-semibold text-sm text-red-600"

@@ -34,7 +34,7 @@ export interface TransactionProps<T> {
 export interface RecipientListProps {
   recipients: RecipientProps[],
   isEditing: boolean,
-  handleDeletedRecipient: (data: any) => void
+  handleDeleteRecipient: (data: any) => void
 }
 
 export interface RecipientProps {
