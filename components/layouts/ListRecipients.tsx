@@ -2,7 +2,7 @@
 
 import { SearchBar, CustomButton } from "@/components";
 import { TrashIcon } from '@heroicons/react/20/solid'
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { RecipientListProps, SelectedRecipient } from "@/types";
 import { usePathname } from "next/navigation";
 
@@ -15,7 +15,22 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
   const initialValue = {
     recipients: []
   }
+
   const [selectedRecipient, setSelectedRecipient] = useState<SelectedRecipient>(initialValue)
+  const [allRecipients, setAllRecipients] = useState(recipients)
+
+  async function onSearch (name: string) {
+    try {
+      const result = recipients.filter((recipient) => recipient.recipient_name.toLowerCase().includes(name.toLowerCase()))
+      setAllRecipients(result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    onSearch('')
+  }, [])
 
   const onChangeCheckBox = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target
@@ -40,7 +55,7 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
   return (
     <div className="h-full w-full">
       <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
-        <SearchBar placeholder="Search recipient" />
+        <SearchBar handleSearch={(value) => onSearch(value)} placeholder="Search recipient" />
 
         { (isEditing || isCreatePage) && (
           <div className="flex md:flex-row flex-col gap-2">
@@ -100,7 +115,7 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
               </tr>
             </thead>
             <tbody>
-              {recipients.map(
+              {allRecipients.map(
                 (
                   {
                     recipient_id,

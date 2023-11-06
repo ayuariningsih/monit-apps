@@ -11,6 +11,9 @@ export const resolvers = {
     transaction(_: any, args: { id: string }) {
       return db.transactions.find((transaction) => transaction.id === args.id)
     },
+    searchTransaction(_: any, args: { name: string }) {
+      return db.transactions.filter((transaction) => transaction.name.toLowerCase().includes(args.name.toLowerCase()))
+    },
   },
   Mutation: {
     createTransaction(_: any, args: { transaction: any }) {

@@ -1,14 +1,40 @@
+"use client"
+
 import Link from "next/link";
 import { CustomButton, SearchBar } from "@/components";
 import { TransactionListProps } from "@/types";
+import { searchTransactionsByName } from "@/utils";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
  
 const TABLE_HEAD = ["Transfer Name", "Total Recipient", "Total Amount", ""]
  
 const ListTransactions = ({ transactions }: TransactionListProps) => {
+  const [allTransactions, setAllTransactions] = useState(transactions)
+  const router = useRouter()
+
+  async function onSearch (queryParams: string) {
+    try {
+      const { searchTransaction } = await searchTransactionsByName(queryParams)
+
+      setAllTransactions(searchTransaction)
+
+      if (queryParams === '') router.push('/')
+      else router.push(`/?name=${queryParams}`)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    onSearch('')
+  }, [])
+  
+
   return (
     <div className="h-full w-full">
       <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-8 mt-2">
-        <SearchBar placeholder="Search by name" />
+        <SearchBar handleSearch={(val) => onSearch(val)} placeholder="Search by name" />
 
         <Link href="/create">
           <CustomButton
@@ -21,7 +47,7 @@ const ListTransactions = ({ transactions }: TransactionListProps) => {
       </div>
       
       <div className="overflow-auto px-0">
-        { transactions.length > 0 && (
+        { allTransactions.length > 0 && (
           <table className="w-full min-w-max table-auto text-left overflow-x-scroll">
             <thead>
               <tr>
@@ -41,7 +67,7 @@ const ListTransactions = ({ transactions }: TransactionListProps) => {
               </tr>
             </thead>
             <tbody>
-              {transactions.map(
+              {allTransactions.map(
                 (
                   {
                     id,
@@ -51,7 +77,7 @@ const ListTransactions = ({ transactions }: TransactionListProps) => {
                   },
                   index,
                 ) => {
-                  const isLast = index === transactions.length - 1;
+                  const isLast = index === allTransactions.length - 1;
                   const classes = isLast
                     ? "p-4"
                     : "p-4 border-b border-blue-gray-50";

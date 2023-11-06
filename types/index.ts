@@ -55,3 +55,8 @@ export interface PersonProps {
   id: string
   name: string
 }
+
+export interface SearchBarProps {
+  placeholder?: string
+  handleSearch: (e:any) => void
+}

@@ -137,3 +137,32 @@ export async function updateCurrentTransaction(id: string, edits:TransactionProp
 
   return data
 }
+
+export async function searchTransactionsByName(name: string) {
+  const response = await fetch(graphqlUrl, {
+    method: "POST",
+    headers: headers,
+    body: JSON.stringify({
+      query: /* GraphQL */ `query Search($name:String!) {
+        searchTransaction(name: $name) {
+          id,
+          name,
+          total,
+          recipients {
+            recipient_id,
+            recipient_name
+            description,
+            amount,
+            discount,
+            total
+          }
+        }
+      }`,
+      variables: { name }
+    })
+  })
+
+  const { data }  = await response.json()
+
+  return data
+}

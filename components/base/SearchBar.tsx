@@ -1,4 +1,6 @@
-const SearchBar = ({ placeholder }: { placeholder: string}) => {
+import { SearchBarProps } from "@/types"
+
+const SearchBar = ({ placeholder, handleSearch }: SearchBarProps) => {
   return (
     <div className="relative xl:w-1/3 md:w-1/2 w-full">
       <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -6,7 +8,13 @@ const SearchBar = ({ placeholder }: { placeholder: string}) => {
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
       </div>
-      <input className="block w-full px-4 py-2.5 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-gray-400" type="text" placeholder={placeholder} />
+
+      <input
+        className="block w-full px-4 py-2.5 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:outline-gray-400"
+        type="text"
+        placeholder={placeholder}
+        onChange={(e) => handleSearch(e.target.value)}
+      />
     </div>
   )
 }

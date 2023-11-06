@@ -38,7 +38,6 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
     
       return false;
     })
-    console.log(isNullish)
     setIsValidForm(Object.keys(errors).length === 0)
   }
 

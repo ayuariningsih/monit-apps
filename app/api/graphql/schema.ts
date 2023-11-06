@@ -24,12 +24,8 @@ export const typeDefs = `#graphql
     person: [RecipientOptions]
     transactions: [Transaction!]
     transaction(id: ID!): Transaction
+    searchTransaction(name: String!): [Transaction]
   }
-
-  # input PersonInput {
-  #   id: String!
-  #   name: String!
-  # }
 
   input RecipientInput {
     recipient_id: ID!

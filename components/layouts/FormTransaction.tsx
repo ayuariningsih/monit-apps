@@ -40,7 +40,7 @@ const FormTransaction = () => {
     
       return false
     })
-    console.log(isNullish)
+    
     setIsValidForm(Object.keys(errors).length === 0)
   }
 
