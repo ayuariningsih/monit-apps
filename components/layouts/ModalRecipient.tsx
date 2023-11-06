@@ -31,13 +31,6 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
     if (recipient_name === '') errors.recipient_name = 'Name is required'
 
     setErrors(errors)
-    const isNullish = Object.values(errors).every(value => {
-      if (value === '') {
-        return true;
-      }
-    
-      return false;
-    })
     setIsValidForm(Object.keys(errors).length === 0)
   }
 
@@ -45,6 +38,10 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
     validateForm()
   
   }, [recipient.amount, recipient.recipient_name])
+
+  useEffect(() => {
+    setErrors({})
+  }, [])
   
 
   const getTotalAmount = (amount: string = '0', discount: string = '0'): string => {

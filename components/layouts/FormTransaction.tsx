@@ -33,14 +33,8 @@ const FormTransaction = () => {
     const { name } = detailTransaction
 
     if (name === '') errors.name = 'Name is required'
+    
     setErrors(errors)
-
-    const isNullish = Object.values(errors).every(value => {
-      if (value === '') return true
-    
-      return false
-    })
-    
     setIsValidForm(Object.keys(errors).length === 0)
   }
 
@@ -48,6 +42,11 @@ const FormTransaction = () => {
     validateForm()
   
   }, [detailTransaction.name])
+
+  useEffect(() => {
+    setErrors({})
+  }, [])
+  
 
   async function fetchTransaction() {
     try {
