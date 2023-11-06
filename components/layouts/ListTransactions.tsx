@@ -2,40 +2,12 @@ import Link from "next/link";
 import { CustomButton, SearchBar } from "@/components";
 import { TransactionListProps } from "@/types";
  
-const TABLE_HEAD = ["Transfer Name", "Total Recipient", "Total Amount", ""];
- 
-// const TABLE_ROWS = [
-//   {
-//     id: 1,
-//     name: "Payroll Aug",
-//     total_amount: "Rp 37.000.000",
-//     total_recipient: 4,
-//   },
-//   {
-//     id: 2,
-//     name: "Payroll Jul",
-//     total_amount: "Rp 37.000.000",
-//     total_recipient: 10,
-//   },
-//   {
-//     id: 3,
-//     name: "Payroll Jun",
-//     total_amount: "Rp 58.000.000",
-//     total_recipient: 15,
-//   },
-//   {
-//     id: 4,
-//     name: "Payroll Mei",
-//     total_amount: "Rp 50.000.000",
-//     total_recipient: 13,
-//   },
-// ];
-
+const TABLE_HEAD = ["Transfer Name", "Total Recipient", "Total Amount", ""]
  
 const ListTransactions = ({ transactions }: TransactionListProps) => {
   return (
     <div className="h-full w-full">
-      <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
+      <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-8 mt-2">
         <SearchBar placeholder="Search by name" />
 
         <Link href="/create">

@@ -2,46 +2,11 @@
 
 import { SearchBar, CustomButton } from "@/components";
 import { TrashIcon } from '@heroicons/react/20/solid'
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { RecipientListProps, SelectedRecipient } from "@/types";
 import { usePathname } from "next/navigation";
 
-const TABLE_HEAD = ["Recipient", "Description", "Discount", "Amount", "Total"];
-
-// const TABLE_ROWS = [
-//   {
-//     id: 1,
-//     recipient_name: "Ayu",
-//     description: "Salary Juni",
-//     discount: "10%",
-//     amount: "Rp 10.000.000",
-//     total: "Rp 9.900.000"
-//   },
-//   {
-//     id: 2,
-//     recipient_name: "Nicholas Saputra",
-//     description: "Salary Juni",
-//     discount: "10%",
-//     amount: "Rp 10.000.000",
-//     total: "Rp 9.900.000"
-//   },
-//   {
-//     id: 3,
-//     recipient_name: "Kiki Saputri",
-//     description: "Salary Juni",
-//     discount: "10%",
-//     amount: "Rp 10.000.000",
-//     total: "Rp 9.900.000"
-//   },
-//   {
-//     id: 4,
-//     recipient_name: "Uzumaki Naruto",
-//     description: "Salary Juni",
-//     discount: "10%",
-//     amount: "Rp 10.000.000",
-//     total: "Rp 9.900.000"
-//   }
-// ]
+const TABLE_HEAD = ["Recipient", "Description", "Discount", "Amount", "Total"]
 
 const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: RecipientListProps) => {
   const pathName = usePathname()
@@ -77,7 +42,7 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
       <div className="flex flex-col md:flex-row md:items-center gap-8 justify-between mb-4 mt-2">
         <SearchBar placeholder="Search recipient" />
 
-        { isEditing && (
+        { (isEditing || isCreatePage) && (
           <div className="flex md:flex-row flex-col gap-2">
             <CustomButton
               title={`Deleted ${selectedRecipient.recipients.length} selected`}

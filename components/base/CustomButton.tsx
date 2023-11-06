@@ -1,12 +1,11 @@
 "use client"
 
 import { CustomButtonProps } from '@/types'
-import Image from 'next/image'
 
-const CustomButton = ({ title, containerStyles, handleClick, btnType, textStyles, leftIcon }: CustomButtonProps) => {
+const CustomButton = ({ title, containerStyles, handleClick, btnType, textStyles, leftIcon, isDisabled }: CustomButtonProps) => {
   return (
     <button
-      disabled={false}
+      disabled={isDisabled}
       type={btnType || "button"}
       className={`flex flex-row relative justify-center items-center py-1.5 px-5 ${containerStyles}`}
       onClick={ handleClick }

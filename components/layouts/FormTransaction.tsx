@@ -1,6 +1,6 @@
 "use client"
 
-import { FormEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { CustomButton, ListRecipients, ModalRecipient } from "@/components"
 import { PlusCircleIcon } from '@heroicons/react/20/solid'
 import { useRouter, useParams, usePathname } from "next/navigation"
@@ -24,7 +24,31 @@ const FormTransaction = () => {
   }
 
   const [detailTransaction, setDetailTransaction] = useState<TransactionProps<RecipientProps[]>>(initialTransaction)
+  const [isValidForm, setIsValidForm] = useState(false)
+  const [errors, setErrors] = useState({})
+
+   // validation rules
+   const validateForm = () => {
+    let errors = {}
+    const { name } = detailTransaction
+
+    if (name === '') errors.name = 'Name is required'
+    setErrors(errors)
+
+    const isNullish = Object.values(errors).every(value => {
+      if (value === '') return true
+    
+      return false
+    })
+    console.log(isNullish)
+    setIsValidForm(Object.keys(errors).length === 0)
+  }
+
+  useEffect(() => {
+    validateForm()
   
+  }, [detailTransaction.name])
+
   async function fetchTransaction() {
     try {
       const { transaction } = await getTransactionById(params.id.toString())
@@ -83,9 +107,7 @@ const FormTransaction = () => {
 
   // handle action buttons
   async function handleSubmit() {
-    console.log('before ad/update', detailTransaction)
-    
-    if (detailTransaction.recipients.length < 1 && isEditing) return
+    if (!isValidForm) return 
 
     if (isDetailPage) await handleUpdateTransaction()
     else await handleAddTransaction(detailTransaction)
@@ -93,11 +115,11 @@ const FormTransaction = () => {
 
   async function handleAddTransaction(newTransaction:TransactionProps<RecipientProps[]>) {
     try {
-      const { addTransaction } = await createNewTransaction(newTransaction)
+      const { createTransaction } = await createNewTransaction(newTransaction)
 
-      if (addTransaction) finish()
+      if (createTransaction) finish()
     } catch (error) {
-      
+      console.log('error')
     }
   }
 
@@ -128,6 +150,7 @@ const FormTransaction = () => {
             >
               Transfer Name
             </label>
+
             <input
               onChange={(e) => setDetailTransaction({...detailTransaction, name: e.target.value})}
               value={detailTransaction.name}
@@ -137,6 +160,10 @@ const FormTransaction = () => {
               placeholder="Type transfer name"
               disabled={!isEditing && isDetailPage}
             />
+
+            {errors.name && (
+              <p className="text-red-500 text-xs">{ errors.name }</p>
+            )}
           </div>
 
           { isDetailPage && !isEditing 
@@ -161,12 +188,14 @@ const FormTransaction = () => {
              />
           )}
 
-          <ModalRecipient
-            isOpen={isShowModal}
-            handleCloseModal={closeModal}
-            handleAddRecipient={(e) => addRecipient(e)}
-            title="Add New Recipient"
-          />
+          { isShowModal && (
+            <ModalRecipient
+              isOpen={isShowModal}
+              handleCloseModal={closeModal}
+              handleAddRecipient={(e) => addRecipient(e)}
+              title="Add New Recipient"
+            />
+          )}
 
           <div className="my-5">
             <p className="text-gray-400 text-sm flex justify-end">Recipient <span className="ml-12">{ detailTransaction.recipients.length > 0 ? detailTransaction.recipients.length : '0'} recipient(s)</span></p>
@@ -196,8 +225,9 @@ const FormTransaction = () => {
                 <CustomButton
                   title="Save"
                   btnType="button"
-                  containerStyles="bg-primary text-white rounded-lg py-3 px-6"
+                  containerStyles={`${isValidForm ? 'bg-primary text-white' : 'bg-gray-300 text-gray-500' } rounded-lg py-3 px-6`}
                   textStyles="text-sm"
+                  isDisabled={!isValidForm}
                   handleClick={() => handleSubmit()}
                 />
     

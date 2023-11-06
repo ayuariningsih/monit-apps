@@ -13,11 +13,40 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
     recipient_name: '',
     description: '',
     discount: '0',
-    amount: '0',
+    amount: '10000',
     total: '0'
   }
 
   const [recipient, setRecipient] = useState<RecipientProps>(initialRecipient)
+  const [isValidForm, setIsValidForm] = useState(false)
+  const [errors, setErrors] = useState({})
+
+  // validation rules
+  const validateForm = () => {
+    let errors = {}
+    
+    const {amount, recipient_name} = recipient
+
+    if (Number(amount) < 10000) errors.amount = 'Amount should more than 10000'
+    if (recipient_name === '') errors.recipient_name = 'Name is required'
+
+    setErrors(errors)
+    const isNullish = Object.values(errors).every(value => {
+      if (value === '') {
+        return true;
+      }
+    
+      return false;
+    })
+    console.log(isNullish)
+    setIsValidForm(Object.keys(errors).length === 0)
+  }
+
+  useEffect(() => {
+    validateForm()
+  
+  }, [recipient.amount, recipient.recipient_name])
+  
 
   const getTotalAmount = (amount: string = '0', discount: string = '0'): string => {
     const result = Number(amount) - (Number(amount) * Number(discount) / 100)
@@ -43,6 +72,8 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
   }  
 
   async function handleSubmit () {
+    if (!isValidForm) return 
+
     await handleAddRecipient(recipient)
     await handleCloseModal()
 
@@ -109,13 +140,17 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
                           htmlFor="recipient" 
                           className="block mb-2 text-sm font-medium text-gray-900"
                         >
-                          Nama Recipient
+                          Recipient name
                         </label>
 
                         <SelectCustom
                           options={options}
                           containerClass="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
                           handleOnSelect={(value) => onSelectOptions(value)} />
+                        
+                        {errors.recipient_name && (
+                          <p className="text-red-500 text-xs">{ errors.recipient_name }</p>
+                        )}
                       </div>
 
                       <div className="mb-6">
@@ -165,10 +200,14 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
                           value={recipient.amount}
                           type="number"
                           id="amount"
-                          min={0}
+                          min={10000}
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 block w-full p-2.5"
                           placeholder="Input amount"
                         />
+
+                        {errors.amount && (
+                          <p className="text-red-500 text-xs">{errors.amount}</p>
+                        )}
                       </div>
                     </form>
                   </div>
@@ -177,7 +216,8 @@ export default function Modal({ isOpen, handleCloseModal, handleAddRecipient, ti
                     <CustomButton
                       title="Save"
                       btnType="button"
-                      containerStyles="bg-primary text-white rounded-lg py-3 px-6"
+                      isDisabled={!isValidForm}
+                      containerStyles={`${isValidForm ? 'bg-primary text-white' : 'bg-gray-300 text-gray-500' } rounded-lg py-3 px-6`}
                       textStyles="text-sm"
                       handleClick={handleSubmit}
                     />
