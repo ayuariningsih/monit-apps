@@ -134,7 +134,7 @@ const FormTransaction = () => {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-gray-400 w-full block p-2.5"
               id="transfer-name"
               type="text"
-              placeholder="Input transfer name"
+              placeholder="Type transfer name"
               disabled={!isEditing && isDetailPage}
             />
           </div>

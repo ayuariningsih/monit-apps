@@ -78,7 +78,7 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
         <SearchBar placeholder="Search recipient" />
 
         { isEditing && (
-          <div className="flex">
+          <div className="flex md:flex-row flex-col gap-2">
             <CustomButton
               title={`Deleted ${selectedRecipient.recipients.length} selected`}
               btnType="button"
@@ -108,8 +108,8 @@ const ListRecipients = ({ recipients, isEditing, handleDeletedRecipient }: Recip
         )}
       </div>
 
-      <div className="overflow-hidden px-0">
-          <table className="w-full min-w-max table-auto text-left">
+      <div className="overflow-auto px-0">
+          <table className="w-full min-w-max table-auto text-left overflow-x-scroll">
             <thead>
               <tr>
                 { (isEditing || isCreatePage) && (

@@ -48,9 +48,9 @@ const ListTransactions = ({ transactions }: TransactionListProps) => {
         </Link>
       </div>
       
-      <div className="overflow-hidden px-0">
+      <div className="overflow-auto px-0">
         { transactions.length > 0 && (
-          <table className="w-full min-w-max table-auto text-left">
+          <table className="w-full min-w-max table-auto text-left overflow-x-scroll">
             <thead>
               <tr>
                 {TABLE_HEAD.map((head) => (
