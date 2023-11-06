@@ -29,11 +29,10 @@ const FormTransaction = () => {
 
    // validation rules
    const validateForm = () => {
-    let errors = {
-      name: ''
-    }
+    let errors = {}
     const { name } = detailTransaction
 
+    //@ts-ignore
     if (name === '') errors.name = 'Name is required'
     
     setErrors(errors)
@@ -162,8 +161,15 @@ const FormTransaction = () => {
               disabled={!isEditing && isDetailPage}
             />
 
-            {errors.name && (
-              <p className="text-red-500 text-xs">{ errors.name }</p>
+            {
+              //@ts-ignore
+              errors.name && (
+              <p className="text-red-500 text-xs">
+                { 
+                  //@ts-ignore
+                  errors.name
+                }
+              </p>
             )}
           </div>
 
